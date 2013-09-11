@@ -15,12 +15,12 @@
 
 
 void printName(char *str_path);
-void printPermissions(char *str_path);
-void printType(char *str_path);
-void printSize(char *str_path);
-void printUserOwnership(char *str_path);
-void printGroupOwnership(char *str_path);
-void printDates(char *str_path);
+void printPermissions(struct stat buf);
+void printType(struct stat buf);
+void printSize(struct stat buf);
+void printUserOwnership(struct stat buf);
+void printGroupOwnership(struct stat buf);
+void printDates(struct stat buf);
 
 int main(int argc, char *argv[])
 {
@@ -41,34 +41,35 @@ int main(int argc, char *argv[])
         while ((p_dirent = readdir(p_dir)) != NULL) {
 
                 char *str_path = p_dirent->d_name;      // relative path name!
-		printPermissions(str_path);
+		
+		struct stat buf;
+
+		if (stat(str_path, &buf) < 0) {
+			perror("stat error");
+			continue;
+		}
+		
+		printPermissions(buf);
 		printf("\t");
 		printName(str_path);
 		printf("\t");
-		printType(str_path);
+		printType(buf);
 		printf("\t");
-		printUserOwnership(str_path);
+		printUserOwnership(buf);
 		printf("\t");
-		printGroupOwnership(str_path);
+		printGroupOwnership(buf);
 		printf("\t");
-		printDates(str_path); 
+		printDates(buf); 
 		printf("\t");
-		printSize(str_path);
+		printSize(buf);
 		printf("\n");
 	}
 
 	return 0;
 }
 
-void printDates( char *str_path )
+void printDates( struct stat buf )
 {
-	struct stat buf;
-
-	if (stat(str_path, &buf) < 0) {
-		perror("stat error");
-		return;
-	}
-
 	printf( "%s", ctime( &buf.st_atime ) );
 	printf( "%s", ctime( &buf.st_mtime ) );
 	printf( "%s", ctime( &buf.st_ctime ) );
@@ -84,28 +85,14 @@ void printName( char *str_path )
 	}
 }
 
-void printSize( char *str_path )
+void printSize( struct stat buf )
 {
-	struct stat buf;
-
-        if (stat(str_path, &buf) < 0) {
-        	perror("stat error");
-                return;
-        }
-
 	printf( "%llu", (unsigned long long) buf.st_size );
 }
 
 
-void printUserOwnership( char *str_path )
+void printUserOwnership( struct stat buf )
 {
-	struct stat buf;
-
-        if (stat(str_path, &buf) < 0) {
-        	perror("stat error");
-                return;
-        }
-
 	struct passwd *userInfo = getpwuid( buf.st_uid );
 	if( userInfo != NULL ) {
 		printf( "%s", userInfo->pw_name );
@@ -114,15 +101,8 @@ void printUserOwnership( char *str_path )
 	}
 }
 
-void printGroupOwnership( char *str_path )
+void printGroupOwnership( struct stat buf )
 {
-        struct stat buf;
-
-	if (stat(str_path, &buf) < 0) {
-		perror("stat error");
-		return;
-	}
-
 	struct group *groupInfo = getgrgid( buf.st_gid );
 	if( groupInfo != NULL ) {
         	printf( "%s", groupInfo->gr_name );
@@ -131,15 +111,9 @@ void printGroupOwnership( char *str_path )
 	}
 }
 
-void printPermissions( char *str_path )
+void printPermissions( struct stat buf )
 {
 	char str[] = "---";
-	struct stat buf;
-
-        if (lstat(str_path, &buf) < 0) {
-        	perror("lstat error");
-                return;
-        }
 
         mode_t mode = buf.st_mode;
 
@@ -162,15 +136,9 @@ void printPermissions( char *str_path )
 	printf("%s", str);
 }
 
-void printType( char *str_path )
+void printType( struct stat buf )
 {
-        struct stat buf;
         char *ptr;
-
-	if (lstat(str_path, &buf) < 0) {
-        	perror("lstat error");
-		return;
-        }
 
         if      (S_ISREG(buf.st_mode))  ptr = "regular";
         else if (S_ISDIR(buf.st_mode))  ptr = "directory";
