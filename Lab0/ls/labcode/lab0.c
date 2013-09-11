@@ -14,9 +14,10 @@
 #define STRLEN2 64
 
 
-void printPath(char *str_path);
-void printType(char *str_path);
+void printName(char *str_path);
 void printPermissions(char *str_path);
+void printType(char *str_path);
+void printSize(char *str_path);
 
 
 int main(int argc, char *argv[])
@@ -40,9 +41,11 @@ int main(int argc, char *argv[])
                 char *str_path = p_dirent->d_name;      // relative path name!
 		printPermissions(str_path);
 		printf("\t");
-		printPath(str_path);
+		printName(str_path);
 		printf("\t");
 		printType(str_path);
+		printf("\t");
+		printSize(str_path);
 		printf("\n");
 	}
 
@@ -51,7 +54,7 @@ int main(int argc, char *argv[])
 
 
 
-void printPath( char *str_path )
+void printName( char *str_path )
 {
 	if (str_path == NULL) {
 	         printf("Null pointer found!");
@@ -61,6 +64,18 @@ void printPath( char *str_path )
 	}
 }
 	
+void printSize( char *str_path )
+{
+	struct stat buf;
+
+        if (stat(str_path, &buf) < 0) {
+        	perror("stat error");
+                return;
+        }
+
+	printf( "%llu", (unsigned long long) buf.st_size );
+}
+
 void printPermissions( char *str_path )
 {
 	char str[] = "---";
@@ -73,25 +88,22 @@ void printPermissions( char *str_path )
 
         mode_t mode = buf.st_mode;
 
+	// owner permission
         str[0] = (mode & S_IRUSR) ? 'r' : '-';
 	str[1] = (mode & S_IWUSR) ? 'w' : '-';
         str[2] = (mode & S_IXUSR) ? 'x' : '-';
-                               /* assume no sticky bit set */
-	// owner permission
 	printf("%s", str);
 
+	// group permission
         str[0] = (mode & S_IRGRP) ? 'r' : '-';
 	str[1] = (mode & S_IWGRP) ? 'w' : '-';
         str[2] = (mode & S_IXGRP) ? 'x' : '-';
-                               /* assume no sticky bit set */
-	// group permission
 	printf("%s", str);
 
+	// other permission
         str[0] = (mode & S_IROTH) ? 'r' : '-';
 	str[1] = (mode & S_IWOTH) ? 'w' : '-';
         str[2] = (mode & S_IXOTH) ? 'x' : '-';
-                               /* assume no sticky bit set */
-	// other permission
 	printf("%s", str);
 }
 
