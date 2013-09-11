@@ -18,7 +18,8 @@ void printName(char *str_path);
 void printPermissions(char *str_path);
 void printType(char *str_path);
 void printSize(char *str_path);
-
+void printUserOwnership(char *str_path);
+void printGroupOwnership(char *str_path);
 
 int main(int argc, char *argv[])
 {
@@ -45,6 +46,10 @@ int main(int argc, char *argv[])
 		printf("\t");
 		printType(str_path);
 		printf("\t");
+		printUserOwnership(str_path);
+		printf("\t");
+		printGroupOwnership(str_path);
+		printf("\t");
 		printSize(str_path);
 		printf("\n");
 	}
@@ -63,7 +68,7 @@ void printName( char *str_path )
 	         printf("%s", str_path);
 	}
 }
-	
+
 void printSize( char *str_path )
 {
 	struct stat buf;
@@ -74,6 +79,41 @@ void printSize( char *str_path )
         }
 
 	printf( "%llu", (unsigned long long) buf.st_size );
+}
+
+
+void printUserOwnership( char *str_path )
+{
+	struct stat buf;
+
+        if (stat(str_path, &buf) < 0) {
+        	perror("stat error");
+                return;
+        }
+
+	struct passwd *userInfo = getpwuid( buf.st_uid );
+	if( userInfo != NULL ) {
+		printf( "%s", userInfo->pw_name );
+	} else {
+		printf( "invalid uid" );
+	}
+}
+
+void printGroupOwnership( char *str_path )
+{
+        struct stat buf;
+
+	if (stat(str_path, &buf) < 0) {
+		perror("stat error");
+		return;
+	}
+
+	struct group *groupInfo = getgrgid( buf.st_gid );
+	if( groupInfo != NULL ) {
+        	printf( "%s", groupInfo->gr_name );
+	} else {
+		printf( "invalid gid" );
+	}
 }
 
 void printPermissions( char *str_path )
