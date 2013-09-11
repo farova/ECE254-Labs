@@ -20,6 +20,7 @@ void printType(char *str_path);
 void printSize(char *str_path);
 void printUserOwnership(char *str_path);
 void printGroupOwnership(char *str_path);
+void printDates(char *str_path);
 
 int main(int argc, char *argv[])
 {
@@ -50,6 +51,8 @@ int main(int argc, char *argv[])
 		printf("\t");
 		printGroupOwnership(str_path);
 		printf("\t");
+		printDates(str_path); 
+		printf("\t");
 		printSize(str_path);
 		printf("\n");
 	}
@@ -57,7 +60,19 @@ int main(int argc, char *argv[])
 	return 0;
 }
 
+void printDates( char *str_path )
+{
+	struct stat buf;
 
+	if (stat(str_path, &buf) < 0) {
+		perror("stat error");
+		return;
+	}
+
+	printf( "%s", ctime( &buf.st_atime ) );
+	printf( "%s", ctime( &buf.st_mtime ) );
+	printf( "%s", ctime( &buf.st_ctime ) );
+}
 
 void printName( char *str_path )
 {
