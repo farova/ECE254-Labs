@@ -53,16 +53,17 @@ int main(int argc, char *argv[])
 		printf("\t");
 		printName(str_path);
 		printf("\t");
-		printType(buf);
-		printf("\t");
-		printUserOwnership(buf);
-		printf("\t");
-		printGroupOwnership(buf);
-		printf("\t");
-		printDates(buf); 
-		printf("\t");
 		printSize(buf);
+		printf("\nType: ");
+		printType(buf);
+		printf("\nUser: ");
+		printUserOwnership(buf);
+		printf("\tGroup: ");
+		printGroupOwnership(buf);
 		printf("\n");
+		printDates(buf); 
+		printf("\n");
+		
 	}
 
 	return 0;
@@ -70,9 +71,9 @@ int main(int argc, char *argv[])
 
 void printDates( struct stat buf )
 {
-	printf( "%s", ctime( &buf.st_atime ) );
-	printf( "%s", ctime( &buf.st_mtime ) );
-	printf( "%s", ctime( &buf.st_ctime ) );
+	printf( "Access: %s", ctime( &buf.st_atime ) );
+	printf( "Modify: %s", ctime( &buf.st_mtime ) );
+	printf( "Change: %s", ctime( &buf.st_ctime ) );
 }
 
 void printName( char *str_path )

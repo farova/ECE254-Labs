@@ -1,0 +1,11 @@
+Lab 0
+
+Michaela Farova		mfarova	20419771
+Tyler Hart		twhart	20381257
+
+To run the lab code use the following command:
+
+	./lab0.out [dir]
+
+Replace [dir] with the relative path to the directory you would like to analyze.
+
