@@ -15,7 +15,7 @@
 
 
 void printPath(char *str_path);
-void printMode(char *str_path);
+void printType(char *str_path);
 void printPermissions(char *str_path);
 
 
@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
 		printf("\t");
 		printPath(str_path);
 		printf("\t");
-		printMode(str_path);
+		printType(str_path);
 		printf("\n");
 	}
 
@@ -79,9 +79,23 @@ void printPermissions( char *str_path )
                                /* assume no sticky bit set */
 	// owner permission
 	printf("%s", str);
+
+        str[0] = (mode & S_IRGRP) ? 'r' : '-';
+	str[1] = (mode & S_IWGRP) ? 'w' : '-';
+        str[2] = (mode & S_IXGRP) ? 'x' : '-';
+                               /* assume no sticky bit set */
+	// group permission
+	printf("%s", str);
+
+        str[0] = (mode & S_IROTH) ? 'r' : '-';
+	str[1] = (mode & S_IWOTH) ? 'w' : '-';
+        str[2] = (mode & S_IXOTH) ? 'x' : '-';
+                               /* assume no sticky bit set */
+	// other permission
+	printf("%s", str);
 }
 
-void printMode( char *str_path )
+void printType( char *str_path )
 {
         struct stat buf;
         char *ptr;
