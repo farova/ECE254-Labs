@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
 		printPermissions(buf);
 		printf("\t");
 		printName(str_path);
-		printf("\t");
+		printf("\nSize: ");
 		printSize(buf);
 		printf("\nType: ");
 		printType(buf);
