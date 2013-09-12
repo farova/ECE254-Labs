@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
 		
 		struct stat buf;
 
-		if (stat(str_path, &buf) < 0) {
+		if (lstat(str_path, &buf) < 0) {
 			perror("stat error");
 			continue;
 		}
