@@ -29,12 +29,12 @@ int main(int argc, char *argv[])
         struct dirent *p_dirent;
 
         if (argc < 2) {
-                printf("Usage: %s <directory name>\n", argv[0]);
+                printf("Usage: %s <directory name>\n", argv[0]); // errors if no directory specified
                 exit (1);
         }
 
         if ((p_dir = opendir(argv[1])) == NULL) {
-                printf("opendir(%s) failed\n", argv[1]);
+                printf("opendir(%s) failed\n", argv[1]); // errors if unable to open directory stream
                 exit(1);
 	}
 
@@ -69,7 +69,7 @@ int main(int argc, char *argv[])
 	return 0;
 }
 
-void printDates( struct stat buf )
+void printDates( struct stat buf ) // print access time, last modify time and last status change time
 {
 	printf( "Access: %s", ctime( &buf.st_atime ) );
 	printf( "Modify: %s", ctime( &buf.st_mtime ) );
@@ -86,13 +86,13 @@ void printName( char *str_path )
 	}
 }
 
-void printSize( struct stat buf )
+void printSize( struct stat buf ) // print size of file in kilobytes
 {
 	printf( "%llu", (unsigned long long) buf.st_size );
 }
 
 
-void printUserOwnership( struct stat buf )
+void printUserOwnership( struct stat buf ) // print user ownership
 {
 	struct passwd *userInfo = getpwuid( buf.st_uid );
 	if( userInfo != NULL ) {
@@ -102,7 +102,7 @@ void printUserOwnership( struct stat buf )
 	}
 }
 
-void printGroupOwnership( struct stat buf )
+void printGroupOwnership( struct stat buf ) // print group ownership
 {
 	struct group *groupInfo = getgrgid( buf.st_gid );
 	if( groupInfo != NULL ) {
@@ -112,7 +112,7 @@ void printGroupOwnership( struct stat buf )
 	}
 }
 
-void printPermissions( struct stat buf )
+void printPermissions( struct stat buf ) // print permissions
 {
 	char str[] = "---";
 
@@ -137,7 +137,7 @@ void printPermissions( struct stat buf )
 	printf("%s", str);
 }
 
-void printType( struct stat buf )
+void printType( struct stat buf ) // print file type
 {
         char *ptr;
 
