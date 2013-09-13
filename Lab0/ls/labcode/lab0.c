@@ -86,7 +86,7 @@ void printName( char *str_path )
 	}
 }
 
-void printSize( struct stat buf ) // print size of file in kilobytes
+void printSize( struct stat buf ) // print size of file in bytes
 {
 	printf( "%llu", (unsigned long long) buf.st_size );
 }
