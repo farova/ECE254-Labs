@@ -40,8 +40,14 @@ int main(int argc, char *argv[])
 
         while ((p_dirent = readdir(p_dir)) != NULL) {
 
-                char *str_path = p_dirent->d_name;      // relative path name!
+                char *str_name = p_dirent->d_name;      // relative path name!
 		
+		// get proper path to use for lstat
+		char str_path[100];
+		strcpy( str_path, argv[1] );
+		strcat( str_path, "/" );
+		strcat( str_path, str_name );
+
 		struct stat buf;
 
 		if (lstat(str_path, &buf) < 0) {
@@ -50,16 +56,16 @@ int main(int argc, char *argv[])
 		}
 		
 		printPermissions(buf);
-		printf("\t");
-		printName(str_path);
-		printf("\nSize: ");
-		printSize(buf);
-		printf("\nType: ");
+		printf(" ");
+		printName(str_name);
+		printf(" ");
 		printType(buf);
-		printf("\nUser: ");
+		printf(" ");
 		printUserOwnership(buf);
-		printf("\tGroup: ");
+		printf(" ");
 		printGroupOwnership(buf);
+		printf(" ");
+		printSize(buf);
 		printf("\n");
 		printDates(buf); 
 		printf("\n");
@@ -71,9 +77,9 @@ int main(int argc, char *argv[])
 
 void printDates( struct stat buf ) // print access time, last modify time and last status change time
 {
-	printf( "Access: %s", ctime( &buf.st_atime ) );
-	printf( "Modify: %s", ctime( &buf.st_mtime ) );
-	printf( "Change: %s", ctime( &buf.st_ctime ) );
+	printf( "Access Time: %s", ctime( &buf.st_atime ) );
+	printf( "Modify Time: %s", ctime( &buf.st_mtime ) );
+	printf( "Change Time: %s", ctime( &buf.st_ctime ) );
 }
 
 void printName( char *str_path )
